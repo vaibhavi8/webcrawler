@@ -6,7 +6,7 @@ def main():
     print(seed.text)
 
     parser = BeautifulSoup(seed.text, 'html.parser')
-    print(parser.prettify)
     
+
 if __name__ == '__main__':
     main()
