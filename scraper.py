@@ -11,11 +11,12 @@ def main():
 
     parser = BeautifulSoup(seed.content, 'html.parser')
     links = []
-    for i in parser.find_all('a', attrs={'class': 'quicklinks_list__link'}) :
-        links.append([i.text, i['href']])
+    for i in parser.find_all("a", href=True) :
+        if i['href'].startswith('https'):
+            link_url = i['href']
+            links.append([i.text, link_url, (len(links)+1)])        
     writer.writerows(links)
-
-    print(links[0])
+    print(len(links))
     f.close()
 
 if __name__ == '__main__':
