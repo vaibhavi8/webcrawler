@@ -7,8 +7,7 @@ def main():
         text = file.read()
         file.close()
 
-        analysis.create_zipf(text)
-        analysis.create_heaps(text)
+        analysis.create(text)
     
     except IOError as e:
 
