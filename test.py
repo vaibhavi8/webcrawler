@@ -3,7 +3,7 @@ import analysis
 # File to test the text analysis
 def main():
     try:
-        file = open("text.txt", encoding = "utf8")
+        file = open("loremipsum.txt", encoding = "utf8")
         text = file.read()
         file.close()
 

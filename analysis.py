@@ -22,9 +22,13 @@ def create(text):
         word_freq.append(word_list.count(word))
         word_set.add(word)
         set_size.append(len(word_set))
-    create_zipf(word_list, word_freq)
-    create_heaps(word_list, set_size)
+
+    zipf_data = create_zipf(word_list, word_freq)
+    heap_data = create_heaps(word_list, set_size)
+    create_graphs(zipf_data, heap_data)
     return
+
+
 
 def create_zipf(word_list, word_freq):
     """
@@ -46,13 +50,12 @@ def create_zipf(word_list, word_freq):
     zipf_ranks = list(range(1, len(zipf_table) + 1))
 
     # Create a list of each word's frequency
-    zipf_frequency = list(item[1] for index, item in enumerate(sorted_dict, start = 1))
+    zipf_frequency = list(item[1] for index, item in enumerate(sorted_dict, start=1))
 
     # Zip corresponding index and frequencies of each word to create graph
-    zipf_rank_frequency = list(zip(zipf_ranks, zipf_frequency))
-    create_graph(zipf_rank_frequency)
-    
-    return
+    return list(zip(zipf_ranks, zipf_frequency))
+
+
 
 def create_heaps(word_list, set_size):
     """
@@ -66,9 +69,8 @@ def create_heaps(word_list, set_size):
     number_of_words_list = list(range(1, len(word_list) + 1))
 
     # Create a list of the number of words and the corresponding set size, and return
-    heaps_list = list(zip(number_of_words_list, set_size))
-    create_graph(heaps_list)
-    return
+    return list(zip(number_of_words_list, set_size))
+
 
 def format_text(text):
     # Parses through the html to only extract the words
@@ -79,10 +81,12 @@ def format_text(text):
     text_from_html = text_from_html.lower()
     return text_from_html
 
+
 def words_to_list(words):
     # Creates a list of the words in the text with space delimiter
     word_list = words.split()
     return word_list
+
 
 def create_sorted_dictionary(word_list, word_freq):
     # Zip together the words and their frequencies in a dictionary, making each pair only
@@ -92,6 +96,7 @@ def create_sorted_dictionary(word_list, word_freq):
     # Sort the dictionary by their frequency and return
     sorted_dict = sorted(word_dict.items(), key=lambda item: item[1], reverse=True)
     return sorted_dict
+
 
 def generate_zipf_table(sorted_dict, total_words):
     zipf_table = []
@@ -104,11 +109,12 @@ def generate_zipf_table(sorted_dict, total_words):
 
         # Append the information for each word in the table and return
         zipf_table.append({"word": item[0],
-                            "frequency": item[1],
-                            "rank": index,
-                            "probability": probability,
-                            "probability_of_occurance": probability_of_occurance})
+                           "frequency": item[1],
+                           "rank": index,
+                           "probability": probability,
+                           "probability_of_occurance": probability_of_occurance})
     return zipf_table
+
 
 def print_zipf(zipf_table):
     # Print each word's info in a specific format
@@ -116,18 +122,24 @@ def print_zipf(zipf_table):
 
     for index, item in enumerate(zipf_table, start=1):
         print(format_string.format(item["word"],
-                                    item["frequency"],
-                                    item["rank"],
-                                    item["probability"],
-                                    item["probability_of_occurance"]))
+                                   item["frequency"],
+                                   item["rank"],
+                                   item["probability"],
+                                   item["probability_of_occurance"]))
     return
 
-def create_graph(table):
-    """
-    Takes a zipped list of x values and y values to plot and generate the graph
 
-    Zipf's: word rank vs frequency
-    Heap's: words in collection vs words in vocabulary
-    """
-    plt.plot(*zip(*table))
+def create_graphs(zipf, heap):
+    plt.figure()
+    plt.title('Zipf\'s Law')
+    plt.plot(*zip(*zipf))
+    plt.xlabel('Rank')
+    plt.ylabel('Frequency')
+
+    plt.figure()
+    plt.title('Heap\'s Law')
+    plt.plot(*zip(*heap))
+    plt.xlabel('Words in Collection')
+    plt.ylabel('Words in Vocabulary')
+
     plt.show()
