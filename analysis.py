@@ -29,6 +29,7 @@ def create(text):
     return
 
 
+
 def create_zipf(word_list, word_freq):
     """
     Method called in order to create the Zipf's table and graph from the text
@@ -53,6 +54,7 @@ def create_zipf(word_list, word_freq):
 
     # Zip corresponding index and frequencies of each word to create graph
     return list(zip(zipf_ranks, zipf_frequency))
+
 
 
 def create_heaps(word_list, set_size):
