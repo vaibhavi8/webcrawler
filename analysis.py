@@ -3,22 +3,43 @@ from matplotlib import pyplot as plt
 from bs4 import BeautifulSoup
 
 
-def create_zipf(text):
-    """
-    Method called in order to create the zipf's table and graph from the text
+def create(text):
+    words = format_text(text)
+    word_list = words_to_list(words)
 
-    Formats the text by removing puncuations, adds all the words into a list, 
-    creates a sorted dictionary from the list by rank, prints the information,
+    # Initialize an empty list to track the frequencies of each
+    # word in the word list for Zipf's
+    word_freq = []
+
+    # Initialize an empty set to track the unique words in the text
+    # and a list to track the set size for each word in Heap's
+    word_set = set()
+    set_size = []
+
+    # Loop through all the words in the list and create lists for
+    # Zipf's and Heap's
+    for word in word_list:
+        word_freq.append(word_list.count(word))
+        word_set.add(word)
+        set_size.append(len(word_set))
+
+    zipf_data = create_zipf(word_list, word_freq)
+    heap_data = create_heaps(word_list, set_size)
+    create_graphs(zipf_data, heap_data)
+    return
+
+
+def create_zipf(word_list, word_freq):
+    """
+    Method called in order to create the Zipf's table and graph from the text
+ 
+    Creates a sorted dictionary from the list by rank, prints the information,
     and lastly generates a graph of word rank vs frequency
 
     """
-
-    words = format_text(text)
-
-    word_list = words_to_list(words)
     totalWords = len(word_list)
 
-    sorted_dict = create_sorted_dictionary(word_list)
+    sorted_dict = create_sorted_dictionary(word_list, word_freq)
 
     zipf_table = generate_zipf_table(sorted_dict, totalWords)
 
@@ -28,28 +49,26 @@ def create_zipf(text):
     zipf_ranks = list(range(1, len(zipf_table) + 1))
 
     # Create a list of each word's frequency
-    zipf_frequency = list(item[1] for index, item in enumerate(sorted_dict, start = 1))
+    zipf_frequency = list(item[1] for index, item in enumerate(sorted_dict, start=1))
 
     # Zip corresponding index and frequencies of each word to create graph
-    zipf_rank_frequency = list(zip(zipf_ranks, zipf_frequency))
-    create_graph(zipf_rank_frequency)
-    
-    return
+    return list(zip(zipf_ranks, zipf_frequency))
 
-def create_heaps(text):
+
+def create_heaps(word_list, set_size):
     """
-    Method called in order to create the zipf's table and graph from the text
+    Method called in order to create the Heap's table and graph from the text
 
-    Formats the text by removing puncuations, adds all the words into a list, 
-    and generates a list for Heap's law by tracking number of words and 
-    unique words in the text
+    Generates a list for Heap's law by tracking number of words (words_list) and 
+    unique words in the text (set_size)
 
     """
-    words = format_text(text)
-    word_list = words_to_list(words)
-    heaps_table = generate_heaps(word_list)
-    create_graph(heaps_table)
-    return
+    # Create a list of numbers from 1 to the total number of words
+    number_of_words_list = list(range(1, len(word_list) + 1))
+
+    # Create a list of the number of words and the corresponding set size, and return
+    return list(zip(number_of_words_list, set_size))
+
 
 def format_text(text):
     # Parses through the html to only extract the words
@@ -60,19 +79,14 @@ def format_text(text):
     text_from_html = text_from_html.lower()
     return text_from_html
 
+
 def words_to_list(words):
     # Creates a list of the words in the text with space delimiter
     word_list = words.split()
     return word_list
 
-def create_sorted_dictionary(word_list):
-    word_freq = []
 
-    # For each word in the word list, add the frequency of that word
-    # to the word_freq list
-    for word in word_list:
-        word_freq.append(word_list.count(word))
-
+def create_sorted_dictionary(word_list, word_freq):
     # Zip together the words and their frequencies in a dictionary, making each pair only
     # appear once
     word_dict = dict(list(zip(word_list, word_freq)))
@@ -80,6 +94,7 @@ def create_sorted_dictionary(word_list):
     # Sort the dictionary by their frequency and return
     sorted_dict = sorted(word_dict.items(), key=lambda item: item[1], reverse=True)
     return sorted_dict
+
 
 def generate_zipf_table(sorted_dict, total_words):
     zipf_table = []
@@ -92,11 +107,12 @@ def generate_zipf_table(sorted_dict, total_words):
 
         # Append the information for each word in the table and return
         zipf_table.append({"word": item[0],
-                            "frequency": item[1],
-                            "rank": index,
-                            "probability": probability,
-                            "probability_of_occurance": probability_of_occurance})
+                           "frequency": item[1],
+                           "rank": index,
+                           "probability": probability,
+                           "probability_of_occurance": probability_of_occurance})
     return zipf_table
+
 
 def print_zipf(zipf_table):
     # Print each word's info in a specific format
@@ -104,38 +120,24 @@ def print_zipf(zipf_table):
 
     for index, item in enumerate(zipf_table, start=1):
         print(format_string.format(item["word"],
-                                    item["frequency"],
-                                    item["rank"],
-                                    item["probability"],
-                                    item["probability_of_occurance"]))
+                                   item["frequency"],
+                                   item["rank"],
+                                   item["probability"],
+                                   item["probability_of_occurance"]))
     return
 
-def generate_heaps(word_list):
 
-    # Initialize an empty set to track the unique words in the text
-    # and a list to trank the set size for each word
-    word_set = set()
-    set_size = []
+def create_graphs(zipf, heap):
+    plt.figure()
+    plt.title('Zipf\'s Law')
+    plt.plot(*zip(*zipf))
+    plt.xlabel('Rank')
+    plt.ylabel('Frequency')
 
-    # For each word in the list, add the word in the set of unique words
-    # and append the size of this set to the set_size list for each word
-    for word in word_list:
-        word_set.add(word)
-        set_size.append(len(word_set))
-    
-    # Create a list of numbers from 1 to the total number of words
-    number_of_words_list = list(range(1, len(word_list) + 1))
+    plt.figure()
+    plt.title('Heap\'s Law')
+    plt.plot(*zip(*heap))
+    plt.xlabel('Words in Collection')
+    plt.ylabel('Words in Vocabulary')
 
-    # Create a list of the number of words and the corresponding set size, and return
-    heaps_list = list(zip(number_of_words_list, set_size))
-    return heaps_list
-
-def create_graph(table):
-    """
-    Takes a zipped list of x values and y values to plot and generate the graph
-
-    Zipf's: word rank vs frequency
-    Heap's: words in collection vs words in vocabulary
-    """
-    plt.plot(*zip(*table))
     plt.show()
