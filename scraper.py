@@ -4,14 +4,15 @@ import random
 
 
 def main():
-    seed = requests.get('https://espn.com')
+    seed = requests.get('https://google.com')
     parser = BeautifulSoup(seed.content, 'html.parser')
 
     # Dictionary where key is url and value is number of outlinks
     links = {}
-
+    # minimun number of links to crawl
+    numLinks = 100
     # Get 500 links using seed
-    while(len(links) < 500):
+    while(len(links) < numLinks):
         for i in parser.find_all("a", href=True):
             if i['href'].startswith('https'):
                 link_url = i['href']
@@ -27,9 +28,7 @@ def main():
                     title = parser.title.text
                     print(title)
                 print("%s%%" %
-                      str(float(len(links))/float(500)))
-                if(len(links) > 500):
-                    break
+                      str(float(len(links))/float(numLinks)*100))
                 f.close
                 # Get number of outlinks
                 outlinks = 0
@@ -38,6 +37,8 @@ def main():
                         outlinks += 1
                 # Store URL and number of outlinks in dictionary
                 links[link_url] = outlinks
+                if(len(links) > numLinks):
+                    break
         # Get random link to crawl next
         nextLink = requests.get(random.choice(list(links.keys())))
         parser = BeautifulSoup(nextLink.content, 'html.parser')
