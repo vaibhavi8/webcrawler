@@ -1,6 +1,3 @@
-<<<<<<< Updated upstream
- 
-=======
 # CS4250 Project 1
 
 Group project for CS4250, Search and Information Retrieval, at Cal Poly for the fall semester of 2021.
@@ -30,4 +27,3 @@ run `scraper.py` using python3.x
 All downloaded html pages will be in `/repository/text.html` and a report will be generated containing the craweled URL's and the number of outlinks
 
 ## Text Analysis
->>>>>>> Stashed changes

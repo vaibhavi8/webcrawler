@@ -1,6 +1,7 @@
 import string
 from matplotlib import pyplot as plt
 from bs4 import BeautifulSoup
+import time
 
 
 def create(text):
@@ -26,6 +27,7 @@ def create(text):
     zipf_data = create_zipf(word_list, word_freq)
     heap_data = create_heaps(word_list, set_size)
     create_graphs(zipf_data, heap_data)
+
     return
 
 
@@ -72,11 +74,8 @@ def create_heaps(word_list, set_size):
 
 
 def format_text(text):
-    # Parses through the html to only extract the words
-    text_from_html = BeautifulSoup(text, features="html.parser").text
-
     # Format the text by removing all punctuation and converting to lower case
-    text_from_html = text_from_html.translate(str.maketrans("", "", string.punctuation))
+    text_from_html = text.translate(str.maketrans("", "", string.punctuation))
     text_from_html = text_from_html.lower()
     return text_from_html
 
