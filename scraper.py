@@ -72,7 +72,7 @@ def scrape(seed_url, repo_lang):
         # Get random link to crawl next
         doc = requests.get(random.choice(list(links.keys())))
         parser = BeautifulSoup(doc.content, 'html.parser')
-        time.sleep(0.5)
+        time.sleep(1.5)
 
     # Write URL and number of outlinks to CSV
     report = './repository-' + repo_lang + '/report.csv'

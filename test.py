@@ -8,11 +8,11 @@ def main():
     spn = './repository-es/text.txt'
 
     try:
-        file = open(spn, encoding = "utf8")
+        file = open(eng, encoding = "utf8")
         text = file.read()
         file.close()
 
-        analysis.create(text)
+        analysis.create(text, 'en')
     
     except IOError as e:
         print(e)
