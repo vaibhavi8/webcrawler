@@ -17,6 +17,8 @@ Install dependencies
 
     pip install BeautifulSoup
     pip install requests
+    pip install langdetect
+    pip install -U matplotlib
 
 run `scraper.py` using python3.x
 
